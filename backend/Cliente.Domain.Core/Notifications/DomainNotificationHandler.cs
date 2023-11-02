@@ -12,7 +12,8 @@ public class DomainNotificationHandler : INotificationHandler<DomainNotification
     }
     public Task Handle(DomainNotification notification, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _notifications.Add(notification);
+        return Task.CompletedTask;
     }
     public virtual List<DomainNotification> GetNotifications()
     {

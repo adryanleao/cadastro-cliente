@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <ProjectReference Include="..\Cliente.Application\Cliente.Application.csproj" />
-    <ProjectReference Include="..\Cliente.Domain\Cliente.Domain.csproj" />
-    <ProjectReference Include="..\Cliente.Infra.CrossCutting.Bus\Cliente.Infra.CrossCutting.Bus.csproj" />
-    <ProjectReference Include="..\Cliente.Infra.Data\Cliente.Infra.Data.csproj" />
+    <ProjectReference Include="..\Cliente.Application\Cliente.Application.csproj"/>
+    <ProjectReference Include="..\Cliente.Domain\Cliente.Domain.csproj"/>
+    <ProjectReference Include="..\Cliente.Infra.CrossCutting.Bus\Cliente.Infra.CrossCutting.Bus.csproj"/>
+    <ProjectReference Include="..\Cliente.Infra.Data\Cliente.Infra.Data.csproj"/>
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2"/>
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
 </Project>

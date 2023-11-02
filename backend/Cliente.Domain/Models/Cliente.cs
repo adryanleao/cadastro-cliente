@@ -15,12 +15,16 @@ public class Cliente : ModelBase
     }
 
     public Cliente(
+        Guid id,
         string nome,
         string email,
-        DateTime dataNascimento)
+        DateTime dataNascimento,
+        Endereco endereco)
     {
+        Id = id;
         Nome = nome;
         Email = email;
         DataNascimento = dataNascimento;
+        Endereco = endereco;
     }
 }

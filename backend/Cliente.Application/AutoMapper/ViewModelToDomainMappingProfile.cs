@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Cliente.Application.ViewModels;
+using Cliente.Domain.Commands;
 
 namespace Cliente.Application.AutoMapper;
 
@@ -6,9 +8,9 @@ public class ViewModelToDomainMappingProfile : Profile
 {
     public ViewModelToDomainMappingProfile()
     {
-        // CreateMap<CustomerViewModel, RegisterNewCustomerCommand>()
-        //     .ConstructUsing(c => new RegisterNewCustomerCommand(c.Name, c.Email, c.BirthDate));
-        // CreateMap<CustomerViewModel, UpdateCustomerCommand>()
-        //     .ConstructUsing(c => new UpdateCustomerCommand(c.Id, c.Name, c.Email, c.BirthDate));
+        CreateMap<ClienteViewModel, RegistrarClienteCommand>()
+            .ConstructUsing(c => new RegistrarClienteCommand(c.Nome, c.Email, c.DataNascimento, c.Cep, c.Logradouro, c.Complemento, c.Bairro, c.Localidade, c.Uf, c.Ibge, c.Gia, c.Ddd, c.Siafi));
+        CreateMap<ClienteViewModel, AtualizarClienteCommand>()
+            .ConstructUsing(c => new AtualizarClienteCommand(c.Nome, c.Email,c.DataNascimento, c.Cep, c.Logradouro, c.Complemento, c.Bairro, c.Localidade, c.Uf, c.Ibge, c.Gia, c.Ddd, c.Siafi));
     }
 }

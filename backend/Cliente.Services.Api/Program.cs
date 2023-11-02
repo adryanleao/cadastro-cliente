@@ -1,4 +1,5 @@
 using Cliente.Services.Api.Configurations;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +23,14 @@ builder.Services.AddAutoMapperConfiguration();
 // Swagger Config
 builder.Services.AddSwaggerConfiguration();
 
+// Adding MediatR for Domain Events and Notifications
+builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
 // .NET Native DI Abstraction
 builder.Services.AddDependencyInjectionConfiguration();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
