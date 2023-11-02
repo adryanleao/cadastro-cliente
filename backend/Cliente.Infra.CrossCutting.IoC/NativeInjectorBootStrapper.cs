@@ -17,6 +17,8 @@ using Cliente.Infra.Data.UoW;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cliente.Infra.CrossCutting.IoC;
 
@@ -52,5 +54,14 @@ public static class NativeInjectorBootStrapper
         services.AddScoped<IEventStoreRepository, EventStoreRepository>();
         services.AddScoped<IEventStore, SqlEventStore>();
         services.AddScoped<EventStoreSqlContext>();
+    }
+
+    public static void ApplyMigrateDB(this IApplicationBuilder app)
+    {
+        var scope = app.ApplicationServices.CreateScope();;
+        var dbContext = scope.ServiceProvider.GetService<ClienteContext>();
+
+        if (!dbContext.Database.EnsureCreated())
+            dbContext.Database.Migrate();
     }
 }

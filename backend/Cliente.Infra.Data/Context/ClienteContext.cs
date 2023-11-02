@@ -14,7 +14,7 @@ public sealed class ClienteContext : DbContext
     public DbSet<Models.Endereco> Enderecos { get; set; }
     public ClienteContext(
         DbContextOptions<ClienteContext> options,
-        IMediatorHandler mediatorHandler)
+        IMediatorHandler mediatorHandler) : base(options)
     {
         _mediatorHandler = mediatorHandler;
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

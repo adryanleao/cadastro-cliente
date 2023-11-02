@@ -10,4 +10,9 @@ public static class DependencyInjectionConfig
 
         NativeInjectorBootStrapper.RegisterServices(services);
     }
+
+    public static void ApplyMigrateDB(this IApplicationBuilder app)
+    {
+        NativeInjectorBootStrapper.ApplyMigrateDB(app);
+    }
 }

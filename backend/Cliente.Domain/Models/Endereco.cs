@@ -15,7 +15,7 @@ public class Endereco : ModelBase
     public string Ddd { get; private set; }
     public string Siafi { get; private set; }
     public Cliente Cliente { get; private set; }
-    public int ClienteRefId { get; private set; }
+    public Guid ClienteRefId { get; private set; }
     
     //constructor for EF
     public Endereco()

@@ -12,7 +12,8 @@ public class ClienteRepository : Repository<Models.Cliente>, IClienteRepository
 
     public Models.Cliente GetByEmail(string email)
     {
-        return DbSet.AsNoTracking()
+        var retorno = DbSet.AsNoTracking()
             .FirstOrDefault(c => c.Email == email);
+        return retorno;
     }
 }

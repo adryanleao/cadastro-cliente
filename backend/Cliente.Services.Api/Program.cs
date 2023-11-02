@@ -53,5 +53,6 @@ app.UseCors(c =>
 app.MapControllers();
 
 app.UseSwaggerSetup();
+app.ApplyMigrateDB();
 
 app.Run();
