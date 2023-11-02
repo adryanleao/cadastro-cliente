@@ -1,8 +1,5 @@
 ﻿using Cliente.Application.Interfaces;
 using Cliente.Application.ViewModels;
-using Cliente.Domain.Core;
-using Cliente.Domain.Core.Notifications;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cliente.Services.Api.Controller;

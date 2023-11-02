@@ -12,15 +12,15 @@ namespace Cliente.Application.Services;
 public class ClienteAppService : IClienteAppService
 {
     private readonly IMapper _mapper;
-    private readonly IClienteRepository _clienteReadOnlyRepository;
+    private readonly IClienteRepository _clienteRepository;
     private readonly IMediatorHandler Bus;
 
     public ClienteAppService(IMapper mapper,
-                             IClienteRepository clienteReadOnlyRepository,
+                             IClienteRepository clienteRepository,
                              IMediatorHandler bus)
     {
         _mapper = mapper;
-        _clienteReadOnlyRepository = clienteReadOnlyRepository;
+        _clienteRepository = clienteRepository;
         Bus = bus;
     }
 
@@ -31,12 +31,12 @@ public class ClienteAppService : IClienteAppService
 
     public async Task<IEnumerable<ClienteViewModel>> GetAllAsync()
     {
-        return _mapper.Map<IEnumerable<ClienteViewModel>>(await _clienteReadOnlyRepository.GetAllAsync());
+        return _mapper.Map<IEnumerable<ClienteViewModel>>(await _clienteRepository.GetAllAsync());
     }
 
     public async Task<ClienteViewModel> GetByIdAsync(Guid id)
     {
-        return _mapper.Map<ClienteViewModel>(await _clienteReadOnlyRepository.GetByIdAsync(id));
+        return _mapper.Map<ClienteViewModel>(await _clienteRepository.GetByIdAsync(id));
     }
 
     public async Task<ValidationResult> RegisterAsync(ClienteViewModel clienteViewModel)

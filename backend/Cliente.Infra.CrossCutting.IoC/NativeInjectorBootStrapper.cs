@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.Results;
+using Cliente.Domain.Models;
+using Cliente.Infra.Rest.Repository;
 
 namespace Cliente.Infra.CrossCutting.IoC;
 
@@ -33,6 +35,7 @@ public static class NativeInjectorBootStrapper
 
         // Application
         services.AddScoped<IClienteAppService, ClienteAppService>();
+        services.AddScoped<IEnderecoAppService, EnderecoAppService>();
 
         // Domain - Events
         services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
@@ -53,6 +56,9 @@ public static class NativeInjectorBootStrapper
         services.AddScoped<IEventStoreRepository, EventStoreRepository>();
         services.AddScoped<IEventStore, SqlEventStore>();
         services.AddScoped<EventStoreSqlContext>();
+
+        // Infra - Rest
+        services.AddScoped<IEnderecoRepository, EnderecoRepository>();
     }
 
     public static void ApplyMigrateDB(this IApplicationBuilder app)

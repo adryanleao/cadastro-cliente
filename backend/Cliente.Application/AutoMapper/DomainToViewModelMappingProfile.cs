@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cliente.Application.ViewModels;
+using Cliente.Domain.Models;
 using Models = Cliente.Domain.Models;
 
 namespace Cliente.Application.AutoMapper;
@@ -22,5 +23,7 @@ public class DomainToViewModelMappingProfile : Profile
             .ForMember(dst => dst.Gia, map => map.MapFrom(src => src.Endereco.Gia))
             .ForMember(dst => dst.Ddd, map => map.MapFrom(src => src.Endereco.Ddd))
             .ForMember(dst => dst.Siafi, map => map.MapFrom(src => src.Endereco.Siafi));
+
+        CreateMap<Endereco, EnderecoViewModel>();
     }
 }
