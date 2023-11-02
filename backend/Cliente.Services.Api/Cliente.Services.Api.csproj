@@ -11,9 +11,6 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configurations/" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Cliente.Infra.CrossCutting.IoC\Cliente.Infra.CrossCutting.IoC.csproj" />
   </ItemGroup>
 </Project>
