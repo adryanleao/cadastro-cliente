@@ -57,10 +57,15 @@ public static class NativeInjectorBootStrapper
 
     public static void ApplyMigrateDB(this IApplicationBuilder app)
     {
-        var scope = app.ApplicationServices.CreateScope();;
-        var dbContext = scope.ServiceProvider.GetService<ClienteContext>();
+        var scope = app.ApplicationServices.CreateScope();
+        var dbContextCliente = scope.ServiceProvider.GetService<ClienteContext>();
+        var dbContextEventStore = scope.ServiceProvider.GetService<EventStoreSqlContext>();
 
-        if (!dbContext.Database.EnsureCreated())
-            dbContext.Database.Migrate();
+
+        if (!dbContextCliente.Database.EnsureCreated())
+            dbContextCliente.Database.Migrate();
+
+        if (!dbContextEventStore.Database.EnsureCreated())
+            dbContextEventStore.Database.Migrate();
     }
 }

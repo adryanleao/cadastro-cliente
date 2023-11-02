@@ -22,6 +22,10 @@ public sealed class ClienteContext : DbContext, IUnitOfWork
         ChangeTracker.AutoDetectChangesEnabled = false;
     }
 
+    public ClienteContext(DbContextOptions<ClienteContext> options) : base(options)
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Ignore<ValidationResult>();
