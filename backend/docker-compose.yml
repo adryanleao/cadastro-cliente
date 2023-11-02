@@ -5,15 +5,16 @@ version: '3.4'
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: desafioSqlServer
     environment:
-      SA_PASSWORD: "Cadastro@Cliente2023"
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Developer"
+      - SA_PASSWORD=Cadastro@Cliente2023
+      - ACCEPT_EULA=Y
     ports:
       - "1433:1433"
 
   clienteservicesapi:
     image: clienteservicesapi
+    container_name: desafioBack
     build:
       context: .
       dockerfile: Cliente.Services.Api/Dockerfile
@@ -21,5 +22,6 @@ services:
       - 2000:2000
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:2000
     depends_on:
       - sqlserver
