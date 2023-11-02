@@ -31,7 +31,7 @@ public class ClienteCommandHandler : CommandHandler,
 
         if (await _clienteRepository.GetByEmailAsync(request.Email) != null)
         {
-            AddError("Já existe um cliente com esse email");
+            AddError("Já existe um cliente com esse e-mail cadastrado.");
             return ValidationResult;
         }
         cliente.AddDomainEvent(new ClienteRegistradoEvent(cliente.Id, cliente.Nome, cliente.Email));
@@ -41,60 +41,45 @@ public class ClienteCommandHandler : CommandHandler,
         return await Commit(_clienteRepository.UnitOfWork);
     }
 
-    // public Task<Unit> Handle(AtualizarClienteCommand request, CancellationToken cancellationToken)
-    // {
-    //     if (!request.IsValid())
-    //         {
-    //             NotifyValidationErrors(request);
-    //             return Task.FromResult(Unit.Value);
-    //         }
+    public async Task<ValidationResult> Handle(AtualizarClienteCommand request, CancellationToken cancellationToken)
+    {
+        if (!request.IsValid()) return request.ValidationResult;
+        var cliente = new Models.Cliente(Guid.NewGuid(),
+                                     request.Nome,
+                                     request.Email,
+                                     request.DataNascimento,
+                                     new Models.Endereco(request.Cep, request.Logradouro, request.Complemento, request.Bairro, request.Localidade, request.Uf, request.Ibge, request.Gia, request.Ddd, request.Siafi));
 
-    //         var cliente = new Models.Cliente(Guid.NewGuid(),
-    //                                      request.Nome,
-    //                                      request.Email,
-    //                                      request.DataNascimento,
-    //                                      new Models.Endereco(request.Cep, request.Logradouro, request.Complemento, request.Bairro, request.Localidade, request.Uf, request.Ibge, request.Gia, request.Ddd, request.Siafi));
+        var existingCliente = await _clienteRepository.GetByEmailAsync(cliente.Email);
+        if (existingCliente != null && existingCliente.Id != cliente.Id)
+        {
+            if (!existingCliente.Equals(cliente))
+            {
+                AddError("Já existe um cliente com esse e-mail cadastrado.");
+                return ValidationResult;
+            }
+        }
+        cliente.AddDomainEvent(new ClienteAtualizadoEvent(cliente.Id, cliente.Nome, cliente.Email));
+        _clienteRepository.Update(cliente);
 
-    //         var existingCliente = _clienteRepository.GetByEmail(cliente.Email);
+        return await Commit(_clienteRepository.UnitOfWork);
+    }
 
-    //         if (existingCliente != null && existingCliente.Id != cliente.Id)
-    //         {
-    //             if (!existingCliente.Equals(cliente))
-    //             {
-    //                 Bus.RaiseEvent(new DomainNotification(request.MessageType, "Ja existe um Cliente com esse e-mail."));
-    //                 return Task.FromResult(Unit.Value);
-    //             }
-    //         }
+    public async Task<ValidationResult> Handle(RemoverClienteCommand request, CancellationToken cancellationToken)
+    {
+        if (!request.IsValid()) return request.ValidationResult;
+        var cliente = await _clienteRepository.GetByIdAsync(request.Id);
 
-    //         _clienteRepository.Update(cliente);
+            if (cliente is null)
+            {
+                AddError("Cliente nao encontrado.");
+                return ValidationResult;
+            }
 
-    //         if (Commit())
-    //         {
-    //             Bus.RaiseEvent(new ClienteAtualizadoEvent(cliente.Id, cliente.Nome, cliente.Email));
-    //         }
+            cliente.AddDomainEvent(new ClienteRemovidoEvent(cliente.Id, cliente.Nome, cliente.Email));
 
-    //         return Task.FromResult(Unit.Value);
-    // }
+            _clienteRepository.Remove(cliente);
 
-    // public Task<Unit> Handle(RemoverClienteCommand request, CancellationToken cancellationToken)
-    // {
-    //     if (!request.IsValid())
-    //     {
-    //         NotifyValidationErrors(request);
-    //         Task.FromResult(Unit.Value);
-    //     }
-    //     var cliente = _clienteRepository.GetByEmail(request.Email);
-    //     if (cliente == null)
-    //     {
-    //         Bus.RaiseEvent(new DomainNotification(request.MessageType, "Cliente não encontrado"));
-    //         return Task.FromResult(Unit.Value);
-    //     }
-    //     _clienteRepository.Remove(cliente.Id);
-
-    //     if (Commit())
-    //     {
-    //         Bus.RaiseEvent(new ClienteRemovidoEvent(cliente.Id, cliente.Nome, cliente.Email));
-    //     }
-    //     return Task.FromResult(Unit.Value);
-    // }
+            return await Commit(_clienteRepository.UnitOfWork);
+    }
 }
