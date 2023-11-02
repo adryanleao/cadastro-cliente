@@ -13,59 +13,43 @@ public class ClienteController : ApiController
     private readonly IClienteAppService _clienteAppService;
 
     public ClienteController(
-        INotificationHandler<DomainNotification> notifications,
-        IMediatorHandler mediator,
-        IClienteAppService clienteAppService) : base(notifications, mediator)
+        IClienteAppService clienteAppService) 
     {
         _clienteAppService = clienteAppService;
     }
 
     [HttpGet]
     [Route("clientes")]
-    public IActionResult Get()
+    public async Task<IEnumerable<ClienteViewModel>> Get()
     {
-        return Response(_clienteAppService.GetAll());
+        return await _clienteAppService.GetAllAsync();
     }
 
     [HttpGet]
-    [Route("clientes/{email}")]
-    public IActionResult Get(string email)
+    [Route("clientes/{id:guid}")]
+    public async Task<ClienteViewModel> Get(Guid id)
     {
-        var clienteViewModel = _clienteAppService.GetByEmail(email);
-        return Response(clienteViewModel);
+        return await _clienteAppService.GetByIdAsync(id);
     }
 
     [HttpPost]
     [Route("clientes")]
-    public IActionResult Post([FromBody] ClienteViewModel clienteViewModel)
+    public async Task<IActionResult> Post([FromBody] ClienteViewModel clienteViewModel)
     {
-        if (!ModelState.IsValid)
-        {
-            NotifyModelStateErrors();
-            return Response(clienteViewModel);
-        }
-        _clienteAppService.Register(clienteViewModel);
-        return Response(clienteViewModel);
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _clienteAppService.RegisterAsync(clienteViewModel));
     }
 
     [HttpPut]
     [Route("clientes")]
-    public IActionResult Put([FromBody] ClienteViewModel clienteViewModel)
+    public async Task<IActionResult> Put([FromBody] ClienteViewModel clienteViewModel)
     {
-        if (!ModelState.IsValid)
-        {
-            NotifyModelStateErrors();
-            return Response(clienteViewModel);
-        }
-        _clienteAppService.Update(clienteViewModel);
-        return Response(clienteViewModel);
+        return !ModelState.IsValid ? CustomResponse(ModelState) : CustomResponse(await _clienteAppService.UpdateAsync(clienteViewModel));
     }
 
     [HttpDelete]
-    [Route("clientes/{email}")]
-    public IActionResult Delete(string email)
+    [Route("clientes/{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        _clienteAppService.RemoveByEmail(email);
-        return Response();
+        return CustomResponse(await _clienteAppService.RemoveByIdAsync(id));
     }
 }

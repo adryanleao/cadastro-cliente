@@ -5,10 +5,10 @@ namespace Cliente.Domain.Interfaces;
 public interface IRepository<TEntity> : IDisposable where TEntity : class
 {
     void Add(TEntity obj);
-    TEntity GetById(Guid id);
-    IQueryable<TEntity> GetAll();
+    Task<TEntity> GetByIdAsync(Guid id);
+    Task<IEnumerable<TEntity>> GetAllAsync();
     void Update(TEntity obj);
-    void Remove(Guid id);
-    int SaveChanges();
-    IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+    void Remove(TEntity obj);
+    Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
+    IUnitOfWork UnitOfWork { get; }
 }

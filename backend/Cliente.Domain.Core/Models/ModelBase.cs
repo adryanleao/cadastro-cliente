@@ -1,26 +1,63 @@
-﻿namespace Cliente.Domain.Core;
+﻿using Cliente.Domain.Core.Events;
+
+namespace Cliente.Domain.Core;
 
 public abstract class ModelBase
 {
-    public Guid Id { get; protected set; }
+    private List<Event> _domainEvents;
+
+    public Guid Id { get; set; }
+
+    public IReadOnlyCollection<Event> DomainEvents => _domainEvents?.AsReadOnly();
+
+    protected ModelBase()
+    {
+        Id = Guid.NewGuid();
+    }
+
+    public void AddDomainEvent(Event domainEvent)
+    {
+        _domainEvents = _domainEvents ?? new List<Event>();
+        _domainEvents.Add(domainEvent);
+    }
+
+    public void RemoveDomainEvent(Event domainEvent)
+    {
+        _domainEvents?.Remove(domainEvent);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents?.Clear();
+    }
 
     public override bool Equals(object obj)
     {
-        var compareTo = obj as ModelBase;
+        ModelBase entity = obj as ModelBase;
+        if ((object)this == entity)
+        {
+            return true;
+        }
 
-        if (ReferenceEquals(this, compareTo)) return true;
-        if (ReferenceEquals(null, compareTo)) return false;
+        if ((object)entity == null)
+        {
+            return false;
+        }
 
-        return Id.Equals(compareTo.Id);
+        return Id.Equals(entity.Id);
     }
 
     public static bool operator ==(ModelBase a, ModelBase b)
     {
-        if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
+        if ((object)a == null && (object)b == null)
+        {
             return true;
+        }
 
-        if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+        if ((object)a == null || (object)b == null)
+        {
             return false;
+        }
 
         return a.Equals(b);
     }
@@ -32,11 +69,11 @@ public abstract class ModelBase
 
     public override int GetHashCode()
     {
-        return (GetType().GetHashCode() * 907) + Id.GetHashCode();
+        return (GetType().GetHashCode() ^ 0x5D) + Id.GetHashCode();
     }
 
     public override string ToString()
     {
-        return GetType().Name + " [Id=" + Id + "]";
+        return $"{GetType().Name} [Id={Id}]";
     }
 }

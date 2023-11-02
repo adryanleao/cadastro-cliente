@@ -1,63 +1,62 @@
 ﻿namespace Cliente.Services.Api.Controller;
 
-using Cliente.Domain.Core;
-using Cliente.Domain.Core.Notifications;
-using MediatR;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 
 [ApiController]
 public abstract class ApiController : ControllerBase
 {
-    private readonly DomainNotificationHandler _notifications;
-    private readonly IMediatorHandler _mediator;
+    private readonly ICollection<string> _errors = new List<string>();
 
-    protected ApiController(
-        INotificationHandler<DomainNotification> notifications,
-        IMediatorHandler mediator)
-    {
-        _notifications = notifications as DomainNotificationHandler;
-        _mediator = mediator;
-    }
-
-    protected IEnumerable<DomainNotification> Notifications => _notifications.GetNotifications();
-
-    protected bool IsValidOperation()
-    {
-        return (!_notifications.HasNotifications());
-    }
-
-    protected new IActionResult Response(object result = null)
-    {
-        if (IsValidOperation())
+        protected ActionResult CustomResponse(object result = null)
         {
-            return Ok(new
+            if (IsOperationValid())
             {
-                success = true,
-                data = result
-            });
+                return Ok(result);
+            }
+
+            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
+            {
+                { "Messages", _errors.ToArray() }
+            }));
         }
 
-        return BadRequest(new
+        protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {
-            success = false,
-            errors = _notifications.GetNotifications().Select(n => n.Value)
-        });
-    }
+            var errors = modelState.Values.SelectMany(e => e.Errors);
+            foreach (var error in errors)
+            {
+                AddError(error.ErrorMessage);
+            }
 
-    protected void NotifyModelStateErrors()
-    {
-        var erros = ModelState.Values.SelectMany(v => v.Errors);
-        foreach (var erro in erros)
-        {
-            var erroMsg = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
-            NotifyError(string.Empty, erroMsg);
+            return CustomResponse();
         }
-    }
 
-    protected void NotifyError(string code, string message)
-    {
-        _mediator.RaiseEvent(new DomainNotification(code, message));
-    }
+        protected ActionResult CustomResponse(ValidationResult validationResult)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                AddError(error.ErrorMessage);
+            }
+
+            return CustomResponse();
+        }
+
+        protected bool IsOperationValid()
+        {
+            return !_errors.Any();
+        }
+
+        protected void AddError(string erro)
+        {
+            _errors.Add(erro);
+        }
+
+        protected void ClearErrors()
+        {
+            _errors.Clear();
+        }
 }

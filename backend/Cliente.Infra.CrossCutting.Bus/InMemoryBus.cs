@@ -1,5 +1,6 @@
 ﻿using Cliente.Domain.Core;
 using Cliente.Domain.Core.Events;
+using FluentValidation.Results;
 using MediatR;
 
 namespace Cliente.Infra.CrossCutting.Bus;
@@ -15,15 +16,16 @@ public class InMemoryBus : IMediatorHandler
         _eventStore = eventStore;
     }
 
-    public Task RaiseEvent<T>(T @event) where T : Event
+    public async Task RaiseEvent<T>(T @event) where T : Event
     {
         if (!@event.MessageType.Equals("DomainNotification"))
-                _eventStore?.Save(@event);
-        return _mediator.Publish(@event);
+            _eventStore?.Save(@event);
+
+        await _mediator.Publish(@event);
     }
 
-    public Task SendCommand<T>(T command) where T : Command
-    {
-        return _mediator.Send(@command);
-    }
+    public async Task<ValidationResult> SendCommand<T>(T command) where T : Command
+        {
+            return await _mediator.Send(command);
+        }
 }

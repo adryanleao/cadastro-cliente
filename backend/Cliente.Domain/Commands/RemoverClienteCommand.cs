@@ -4,10 +4,10 @@ namespace Cliente.Domain.Commands;
 
 public class RemoverClienteCommand : ClienteCommand
 {
-    public RemoverClienteCommand(string email)
+    public RemoverClienteCommand(Guid id)
         {
-            Email = email;
-            AggregateId = Guid.NewGuid();
+            Id = id;
+            AggregateId = id;
         }
     public override bool IsValid()
     {

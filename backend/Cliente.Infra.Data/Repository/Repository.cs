@@ -15,34 +15,25 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         DbSet = Db.Set<TEntity>();
     }
 
+    public IUnitOfWork UnitOfWork => Db;
+
     public void Add(TEntity obj)
     {
         DbSet.Add(obj);
     }
 
-    public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+    public Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
     {
         throw new NotImplementedException();
     }
 
-    public IQueryable<TEntity> GetAll()
-    {
-        return DbSet;
-    }
+    public async Task<IEnumerable<TEntity>> GetAllAsync() => await DbSet.ToListAsync();
 
-    public TEntity GetById(Guid id)
-    {
-        return DbSet.Find(id);
-    }
+    public async Task<TEntity> GetByIdAsync(Guid id) => await DbSet.FindAsync(id);
 
-    public void Remove(Guid id)
+    public void Remove(TEntity obj)
     {
-        DbSet.Remove(DbSet.Find(id));
-    }
-
-    public int SaveChanges()
-    {
-        return Db.SaveChanges();
+        DbSet.Remove(obj);
     }
 
     public void Update(TEntity obj)
@@ -53,6 +44,5 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     public void Dispose()
     {
         Db.Dispose();
-        GC.SuppressFinalize(this);
     }
 }

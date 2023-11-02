@@ -1,14 +1,21 @@
 ﻿using Cliente.Domain.Core.Events;
 using FluentValidation.Results;
+using MediatR;
 
 namespace Cliente.Domain.Core;
 
-public abstract class Command : Message
+public abstract class Command : Message, IRequest<ValidationResult>, IBaseRequest
 {
     public DateTime Timestamp { get; private set; }
     public ValidationResult ValidationResult { get; set; }
 
-    protected Command() => Timestamp = DateTime.Now;
+    protected Command()
+    {
+        Timestamp = DateTime.Now;
+        ValidationResult = new ValidationResult();
+    }
 
-    public abstract bool IsValid();
+    public virtual bool IsValid(){
+        return ValidationResult.IsValid;
+    }
 }

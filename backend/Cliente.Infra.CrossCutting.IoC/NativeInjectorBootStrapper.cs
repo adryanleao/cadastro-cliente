@@ -13,12 +13,12 @@ using Cliente.Infra.Data;
 using Cliente.Infra.Data.EventSourcing;
 using Cliente.Infra.Data.Repository;
 using Cliente.Infra.Data.Repository.EventSourcing;
-using Cliente.Infra.Data.UoW;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.Results;
 
 namespace Cliente.Infra.CrossCutting.IoC;
 
@@ -41,13 +41,12 @@ public static class NativeInjectorBootStrapper
         services.AddScoped<INotificationHandler<ClienteAtualizadoEvent>, ClienteEventHandler>();
 
         // Domain - Commands
-        services.AddScoped<IRequestHandler<RegistrarClienteCommand>, ClienteCommandHandler>();
-        services.AddScoped<IRequestHandler<AtualizarClienteCommand>, ClienteCommandHandler>();
-        services.AddScoped<IRequestHandler<RemoverClienteCommand>, ClienteCommandHandler>();
+        services.AddScoped<IRequestHandler<RegistrarClienteCommand, ValidationResult>, ClienteCommandHandler>();
+        //services.AddScoped<IRequestHandler<AtualizarClienteCommand>, ClienteCommandHandler>();
+        //services.AddScoped<IRequestHandler<RemoverClienteCommand>, ClienteCommandHandler>();
 
         // Infra - Data
         services.AddScoped<IClienteRepository, ClienteRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ClienteContext>();
 
         // Infra - Data EventSourcing

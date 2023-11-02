@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Cliente.Application.Interfaces;
 using Cliente.Application.ViewModels;
 using Cliente.Domain.Commands;
 using Cliente.Domain.Core;
 using Cliente.Domain.Interfaces;
+using FluentValidation.Results;
 
 namespace Cliente.Application.Services;
 
@@ -24,41 +24,41 @@ public class ClienteAppService : IClienteAppService
         Bus = bus;
     }
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-    }
-
-    public IEnumerable<ClienteViewModel> Find(Expression<Func<ClienteViewModel, bool>> predicate)
+    public Task<IEnumerable<ClienteViewModel>> FindAsync(Expression<Func<ClienteViewModel, bool>> predicate)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<ClienteViewModel> GetAll()
+    public async Task<IEnumerable<ClienteViewModel>> GetAllAsync()
     {
-        return _clienteReadOnlyRepository.GetAll().ProjectTo<ClienteViewModel>(_mapper.ConfigurationProvider);
+        return _mapper.Map<IEnumerable<ClienteViewModel>>(await _clienteReadOnlyRepository.GetAllAsync());
     }
 
-    public ClienteViewModel GetByEmail(string email)
+    public async Task<ClienteViewModel> GetByIdAsync(Guid id)
     {
-        return _mapper.Map<ClienteViewModel>(_clienteReadOnlyRepository.GetByEmail(email));
+        return _mapper.Map<ClienteViewModel>(await _clienteReadOnlyRepository.GetByIdAsync(id));
     }
 
-    public void Register(ClienteViewModel clienteViewModel)
+    public async Task<ValidationResult> RegisterAsync(ClienteViewModel clienteViewModel)
     {
         var registerCommand = _mapper.Map<RegistrarClienteCommand>(clienteViewModel);
-        Bus.SendCommand(registerCommand);
+        return await Bus.SendCommand(registerCommand);
     }
 
-    public void RemoveByEmail(string email)
+    public async Task<ValidationResult> RemoveByIdAsync(Guid id)
     {
-        var removeCommand = new RemoverClienteCommand(email);
-        Bus.SendCommand(removeCommand);
+        var removeCommand = new RemoverClienteCommand(id);
+        return await Bus.SendCommand(removeCommand);
     }
 
-    public void Update(ClienteViewModel clienteViewModel)
+    public async Task<ValidationResult> UpdateAsync(ClienteViewModel clienteViewModel)
     {
         var updateCommand = _mapper.Map<AtualizarClienteCommand>(clienteViewModel);
-        Bus.SendCommand(updateCommand);
+        return await Bus.SendCommand(updateCommand);
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }

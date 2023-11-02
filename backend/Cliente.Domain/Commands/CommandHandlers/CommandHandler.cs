@@ -1,40 +1,38 @@
 ﻿using Cliente.Domain.Core;
 using Cliente.Domain.Core.Notifications;
 using Cliente.Domain.Interfaces;
+using FluentValidation.Results;
 using MediatR;
 
 namespace Cliente.Domain.Commands.CommandHandlers;
 
-public class CommandHandler
+public abstract class CommandHandler
 {
-    private readonly IUnitOfWork _uow;
-    private readonly IMediatorHandler _bus;
-    private readonly DomainNotificationHandler _notifications;
+protected ValidationResult ValidationResult;
 
-    public CommandHandler(IUnitOfWork uow,
-                          IMediatorHandler bus,
-                          INotificationHandler<DomainNotification> notifications)
+    protected CommandHandler()
     {
-        _uow = uow;
-        _notifications = (DomainNotificationHandler)notifications;
-        _bus = bus;
+        ValidationResult = new ValidationResult();
     }
 
-    protected void NotifyValidationErrors(Command message)
+    protected void AddError(string mensagem)
     {
-        foreach (var error in message.ValidationResult.Errors)
+        ValidationResult.Errors.Add(new ValidationFailure(string.Empty, mensagem));
+    }
+
+    protected async Task<ValidationResult> Commit(IUnitOfWork uow, string message)
+    {
+        if (!(await uow.Commit()))
         {
-            _bus.RaiseEvent(new DomainNotification(message.MessageType, error.ErrorMessage));
+            AddError(message);
         }
+
+        return ValidationResult;
     }
 
-    public bool Commit()
+    protected async Task<ValidationResult> Commit(IUnitOfWork uow)
     {
-        if (_notifications.HasNotifications()) return false;
-        if (_uow.Commit()) return true;
-
-        _bus.RaiseEvent(new DomainNotification("Commit", "Erro ao salvar os dados"));
-        return false;
+        return await Commit(uow, "There was an error saving data").ConfigureAwait(continueOnCapturedContext: false);
     }
 
 }
