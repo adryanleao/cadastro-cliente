@@ -3,6 +3,15 @@
 version: '3.4'
 
 services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Cadastro@Cliente2023"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+
   clienteservicesapi:
     image: clienteservicesapi
     build:
@@ -10,3 +19,7 @@ services:
       dockerfile: Cliente.Services.Api/Dockerfile
     ports:
       - 2000:2000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - sqlserver
