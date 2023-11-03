@@ -15,7 +15,7 @@ export interface ResponseCliente {
   siafi: string;
 }
 
-type GUID = string & { isGuid: true};
+export type GUID = string & { isGuid: true};
 function guid(guid: string) : GUID {
     return  guid as GUID; // maybe add validation that the parameter is an actual guid ?
 }

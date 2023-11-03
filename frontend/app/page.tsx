@@ -1,13 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { Navbar, Footer, Table } from "flowbite-react";
+import {Table } from "flowbite-react";
 import useSWR from 'swr';
 import {
-  ResponseCliente
+  ResponseCliente,
+  GUID
 } from './@types/api';
-import { Skeleton } from "./components";
+import { Footer, Skeleton } from "./components";
 import { useRouter } from 'next/navigation';
 import { PATHS } from "./constants";
 
@@ -22,7 +21,7 @@ export default function Home() {
 
   const { data: clientes, isLoading: isLoadingClientes } = useSWR(() => {
     return {
-      url: 'http://localhost:2000/api/clientes'
+      url: `${PATHS.API_URL}/api/clientes`
     };
   }, getClientes);
 
@@ -106,34 +105,11 @@ export default function Home() {
     ));
   };
 
-  const handleOpenItem = (id: string) => {
-    router.push(`${PATHS.REGISTER}/${id}`);
+  const handleOpenItem = (id: GUID) => {
+    router.push(`/${id}`);
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Navbar fluid rounded className="w-full items-center">
-        <Navbar.Brand as={Link} href="https://flowbite-react.com">
-          <img
-            src="https://avatars.githubusercontent.com/u/14956372?v=4"
-            className="mr-3 h-6 sm:h-9"
-            alt="Flowbite React Logo"
-          />
-          <span className="self-center whitespace-nowrap text-xl text-gray-800 font-semibold dark:text-white">
-            Desafio - Cadastro Cliente
-          </span>
-        </Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse>
-          <Navbar.Link href="#" active>
-            Home
-          </Navbar.Link>
-          <Navbar.Link href="#">Novo Cadastro</Navbar.Link>
-        </Navbar.Collapse>
-      </Navbar>
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex"></div>
-
-      <div className=" items-start">
         <Table striped>
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>
@@ -157,15 +133,5 @@ export default function Home() {
             {renderClientes()}
           </Table.Body>
         </Table>
-      </div>
-
-      <Footer container>
-        <Footer.Copyright href="#" by="NEXT JS" year={2022} />
-        <Footer.LinkGroup>
-          <Footer.Link href="https://github.com/adryanleao">Git Hub</Footer.Link>
-          <Footer.Link href="https://www.linkedin.com/in/adryanleao/">Linkedin</Footer.Link>
-        </Footer.LinkGroup>
-      </Footer>
-    </main>
   );
 }

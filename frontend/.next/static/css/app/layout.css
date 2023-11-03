@@ -1203,6 +1203,9 @@ input:checked + .toggle-bg {
 .z-auto {
   z-index: auto;
 }
+.col-span-1 {
+  grid-column: span 1 / span 1;
+}
 .-mx-1 {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
@@ -1407,9 +1410,6 @@ input:checked + .toggle-bg {
 }
 .max-h-\[90vh\] {
   max-height: 90vh;
-}
-.min-h-screen {
-  min-height: 100vh;
 }
 .w-1\/2 {
   width: 50%;
@@ -1637,6 +1637,9 @@ input:checked + .toggle-bg {
 .grid-flow-col {
   grid-auto-flow: column;
 }
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -1672,6 +1675,9 @@ input:checked + .toggle-bg {
 }
 .justify-between {
   justify-content: space-between;
+}
+.justify-stretch {
+  justify-content: stretch;
 }
 .gap-1 {
   gap: 0.25rem;
@@ -2519,9 +2525,6 @@ input:checked + .toggle-bg {
 }
 .text-center {
   text-align: center;
-}
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 .text-2xl {
   font-size: 1.5rem;
@@ -5134,6 +5137,10 @@ body {
     inset: 0px;
   }
 
+  .md\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+
   .md\:mx-2 {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -5257,9 +5264,12 @@ body {
     margin-top: 2rem;
     margin-bottom: 2rem;
   }
+}
 
-  .lg\:flex {
-    display: flex;
+@media (min-width: 1153px) {
+
+  .min-\[1153px\]\:col-span-3 {
+    grid-column: span 3 / span 3;
   }
 }
 
