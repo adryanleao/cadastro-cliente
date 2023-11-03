@@ -3,8 +3,104 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Footer, Table } from "flowbite-react";
+import useSWR from 'swr';
+import {
+  ResponseCliente
+} from './@types/api';
+import { Skeleton } from "./components";
+
+async function getClientes(params: { url: string }) {
+  const response = await fetch(`${params.url}`);
+  const json: Array<ResponseCliente> = await response.json();
+  return json;
+}
 
 export default function Home() {
+
+  const { data: clientes, isLoading: isLoadingClientes } = useSWR(() => {
+    return {
+      url: 'http://localhost:2000/api/clientes'
+    };
+  }, getClientes);
+
+  const renderClientes = () => {
+    if (isLoadingClientes) {
+      return Array.from({ length: 4 }, (_, v) => v + 1).map((i) => (
+        <Table.Row key={`table-column-skeleton-${i}`}>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+          <Table.Cell>
+            <Skeleton height={20} width={80} />
+          </Table.Cell>
+        </Table.Row>
+      ));
+    }
+    if (!clientes) {
+      return null;
+    }
+    return clientes.map((cliente, index) => (
+      <Table.Row key={`table-column-${cliente.id}-${String(index)}`}>
+        <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                {cliente.nome}
+              </Table.Cell>
+              <Table.Cell>{cliente.email}</Table.Cell>
+              <Table.Cell>{cliente.dataNascimento}</Table.Cell>
+              <Table.Cell>{cliente.cep}</Table.Cell>
+              <Table.Cell>{cliente.logradouro}</Table.Cell>
+              <Table.Cell>{cliente.complemento}</Table.Cell>
+              <Table.Cell>{cliente.bairro}</Table.Cell>
+              <Table.Cell>{cliente.localidade}</Table.Cell>
+              <Table.Cell>{cliente.uf}</Table.Cell>
+              <Table.Cell>{cliente.ibge}</Table.Cell>
+              <Table.Cell>{cliente.gia}</Table.Cell>
+              <Table.Cell>{cliente.ddd}</Table.Cell>
+              <Table.Cell>{cliente.siafi}</Table.Cell>
+              <Table.Cell>
+                <a
+                  href="#"
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                >
+                  Editar
+                </a>
+              </Table.Cell>
+            </Table.Row>
+    ));
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Navbar fluid rounded className="w-full items-center">
@@ -44,32 +140,12 @@ export default function Home() {
             <Table.HeadCell>GIA</Table.HeadCell>
             <Table.HeadCell>DDD</Table.HeadCell>
             <Table.HeadCell>SIAFI</Table.HeadCell>
+            <Table.HeadCell><span className="font-medium text-cyan-600">
+              AÇÃO
+              </span></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                Microsoft Surface Pro
-              </Table.Cell>
-              <Table.Cell>White</Table.Cell>
-              <Table.Cell>Laptop PC</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>$1999</Table.Cell>
-              <Table.Cell>
-                <a
-                  href="#"
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                >
-                  Edit
-                </a>
-              </Table.Cell>
-            </Table.Row>
+            {renderClientes()}
           </Table.Body>
         </Table>
       </div>
