@@ -5,4 +5,5 @@ namespace Cliente.Domain.Interfaces;
 public interface IClienteRepository : IRepository<Models.Cliente>
 {
     Task<Models.Cliente> GetByEmailAsync(string email);
+    Task<List<Models.Cliente>> GetByIdIncludeEnderecoAsync();
 }

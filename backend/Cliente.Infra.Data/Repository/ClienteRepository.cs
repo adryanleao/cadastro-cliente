@@ -10,4 +10,9 @@ public class ClienteRepository : Repository<Models.Cliente>, IClienteRepository
     {
     }
     public async Task<Models.Cliente> GetByEmailAsync(string email) => await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email == email);
+
+    public async Task<List<Models.Cliente>> GetByIdIncludeEnderecoAsync()
+    {
+        return await DbSet.AsNoTracking().Include(i => i.Endereco).ToListAsync();
+    }
 }

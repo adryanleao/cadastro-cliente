@@ -31,7 +31,7 @@ public class ClienteAppService : IClienteAppService
 
     public async Task<IEnumerable<ClienteViewModel>> GetAllAsync()
     {
-        return _mapper.Map<IEnumerable<ClienteViewModel>>(await _clienteRepository.GetAllAsync());
+        return _mapper.Map<IEnumerable<ClienteViewModel>>(await _clienteRepository.GetByIdIncludeEnderecoAsync());
     }
 
     public async Task<ClienteViewModel> GetByIdAsync(Guid id)

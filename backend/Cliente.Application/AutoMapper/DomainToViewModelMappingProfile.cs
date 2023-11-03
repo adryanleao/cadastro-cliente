@@ -10,6 +10,7 @@ public class DomainToViewModelMappingProfile : Profile
     public DomainToViewModelMappingProfile()
     {
         CreateMap<Models.Cliente, ClienteViewModel>()
+            .ForMember(dst => dst.Id, map => map.MapFrom(src => src.Id))
             .ForMember(dst => dst.Nome, map => map.MapFrom(src => src.Nome))
             .ForMember(dst => dst.Email, map => map.MapFrom(src => src.Email))
             .ForMember(dst => dst.DataNascimento, map => map.MapFrom(src => src.DataNascimento))

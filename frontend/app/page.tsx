@@ -8,6 +8,8 @@ import {
   ResponseCliente
 } from './@types/api';
 import { Skeleton } from "./components";
+import { useRouter } from 'next/navigation';
+import { PATHS } from "./constants";
 
 async function getClientes(params: { url: string }) {
   const response = await fetch(`${params.url}`);
@@ -16,6 +18,7 @@ async function getClientes(params: { url: string }) {
 }
 
 export default function Home() {
+  const router = useRouter();
 
   const { data: clientes, isLoading: isLoadingClientes } = useSWR(() => {
     return {
@@ -91,14 +94,20 @@ export default function Home() {
               <Table.Cell>{cliente.siafi}</Table.Cell>
               <Table.Cell>
                 <a
-                  href="#"
                   className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  onClick={() => {
+                    handleOpenItem(cliente.id);
+                  }}
                 >
                   Editar
                 </a>
               </Table.Cell>
             </Table.Row>
     ));
+  };
+
+  const handleOpenItem = (id: string) => {
+    router.push(`${PATHS.REGISTER}/${id}`);
   };
 
   return (
