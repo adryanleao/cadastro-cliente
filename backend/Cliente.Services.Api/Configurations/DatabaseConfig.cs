@@ -9,7 +9,6 @@ public static class DatabaseConfig
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         
-        Console.WriteLine(configuration.GetConnectionString("CadastroClienteConnection"));
         services.AddDbContext<ClienteContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("CadastroClienteConnection")));
 
